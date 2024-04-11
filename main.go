@@ -31,10 +31,10 @@ func MainProgram() {
 
 		switch pilih {
 		case 1:
-			fmt.Println("Masih loading yaaaa")
+			view.VInputBarang()
 			
 		case 2:
-			fmt.Println("Masih loading yaaaa")
+			view.VUpdateBarang()
 
 		case 3:
 			fmt.Println("Masih loading yaaaa")
@@ -43,7 +43,7 @@ func MainProgram() {
 			fmt.Println("Masih loading yaaaa")
 
 		case 5:
-			fmt.Println("Masih loading yaaaa")
+			view.VReadAll()
 
 		default:
 			fmt.Println("Pilihan anda tidak valid!")
