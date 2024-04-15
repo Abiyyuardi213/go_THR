@@ -37,10 +37,10 @@ func MainProgram() {
 			view.VUpdateBarang()
 
 		case 3:
-			fmt.Println("Masih loading yaaaa")
+			view.VDeleteBarang()
 
 		case 4:
-			fmt.Println("Masih loading yaaaa")
+			view.VSearchBarang()
 
 		case 5:
 			view.VReadAll()
@@ -52,8 +52,5 @@ func MainProgram() {
 }
 
 func main() {
-	fmt.Println("halo riva")
-	fmt.Println(" ")
-
 	MainProgram()
 }

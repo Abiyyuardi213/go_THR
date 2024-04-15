@@ -124,3 +124,4 @@ func DeleteBarang(serialNumber int) (*node.DataBarang, bool) {
 	}
 	return nil, false
 }
+

@@ -4,8 +4,23 @@ import (
 	"fmt"
 	"go_THR/controller"
 	"go_THR/model"
+	"os"
+	"os/exec"
+	"runtime"
 	"time"
 )
+
+func VClearScreen() {
+	if runtime.GOOS == "windows" {
+		cmd := exec.Command("cmd", "/c", "cls")
+		cmd.Stdout = os.Stdout
+		cmd.Run()
+	} else {
+		cmd := exec.Command("Clear")
+		cmd.Stdout = os.Stdout
+		cmd.Run()
+	}
+}
 
 func ShowMenu() {
 	fmt.Println("=============================================")
@@ -48,6 +63,7 @@ func VInputBarang() {
 	fmt.Scan(&stake)
 
 	cek := controller.CInputBarang(nama, total, harga, stake)
+	VClearScreen()
 
 	fmt.Println(" ")
 	if cek == true {
@@ -86,7 +102,7 @@ func VReadAll() {
 
 		fmt.Println("-----------------------------------------")
 		for _, barang := range barangs {
-			fmt.Println("-- Serial Number : ", barang.SerialNumber + 1)
+			fmt.Println("-- Serial Number : ", barang.SerialNumber)
 			fmt.Println("-- Nama Barang   : ", barang.Name)
 			fmt.Println("-- Jumlah Barang : ", barang.Total)
 			fmt.Println("-- Harga Barang  : ", barang.Price)
@@ -112,6 +128,8 @@ func VUpdateBarang() {
 	fmt.Scan(&serialNumber)
 
 	barang := controller.CGetBarangBySerialNumber(serialNumber)
+	VClearScreen()
+
 	if barang == nil {
 		fmt.Println("====================================================")
 		fmt.Println("=====-----     BARANG TIDAK DITEMUKAN     -----=====")
@@ -133,6 +151,7 @@ func VUpdateBarang() {
 	fmt.Println("-- Supplier      : ", barang.Shiper)
 	fmt.Println("-- Create At     : ", barang.Create_at)
 	fmt.Println("------------------------------------------------")
+	fmt.Println(" ")
 
 	var name string
 	var total int
@@ -158,6 +177,7 @@ func VUpdateBarang() {
 	fmt.Scan(&shiper)
 
 	updatedBarang, success := controller.CUpdateBarang(serialNumber, name, total, price, shiper)
+	VClearScreen()
 
 	fmt.Println(" ")
 	if success {
@@ -179,5 +199,108 @@ func VUpdateBarang() {
 		fmt.Println("-------------------------------------------------")
 	} else {
 		fmt.Println("----- Gagal Memperbarui Barang -----")
+	}
+}
+
+func VDeleteBarang() {
+	var serialNumber int
+
+	fmt.Println("================================================")
+	fmt.Println("=====-----     DELETE DATA BARANG     -----=====")
+	fmt.Println("================================================")
+	fmt.Println(" ")
+
+	fmt.Println("------------------------------------------------")
+	fmt.Print("-- Input Serial Number : ")
+	fmt.Scan(&serialNumber)
+
+	barangToDelete, found := controller.CSearchBarang(serialNumber)
+	VClearScreen()
+
+	if found {
+		fmt.Println("===========================================")
+		fmt.Println("=====-----     DETAIL BARANG     -----=====")
+		fmt.Println("===========================================")
+		fmt.Println(" ")
+
+		fmt.Println("-------------------------------------------")
+		fmt.Println("-- Serial Number : ", barangToDelete.SerialNumber)
+		fmt.Println("-- Nama Barang   : ", barangToDelete.Name)
+		fmt.Println("-- Jumlah Barang : ", barangToDelete.Total)
+		fmt.Println("-- Harga Barang  : ", barangToDelete.Price)
+		fmt.Println("-- Supplier      : ", barangToDelete.Shiper)
+		fmt.Println("-- Create At     : ", barangToDelete.Create_at)
+		fmt.Println("-------------------------------------------")
+		fmt.Println(" ")
+		fmt.Println("-- Apakah anda yakin akan menghapus barang diatas? (y/n)")
+
+		var confirm string
+		fmt.Scan(&confirm)
+		VClearScreen()
+
+		if confirm == "y" || confirm == "Y" {
+			deletedData, success := controller.CDeleteBarang(serialNumber)
+
+			if success {
+				fmt.Println(" ")
+				fmt.Println("============================================")
+				fmt.Println("=====     BARANG BERHASIL DI HAPUS     =====")
+				fmt.Println("============================================")
+				fmt.Println("-- Serial Number : ", deletedData.SerialNumber)
+				fmt.Println("-- Nama Barang   : ", deletedData.Name)
+				fmt.Println("-- Jumlah Barang : ", deletedData.Total)
+				fmt.Println("-- Harga Barang  : ", deletedData.Price)
+				fmt.Println("-- Supplier      : ", deletedData.Shiper)
+				fmt.Println("-- Create At     : ", deletedData.Create_at)
+				fmt.Println("--------------------------------------------")
+			} else {
+				fmt.Println("==========================================")
+				fmt.Println("=====     GAGAL MENGHAPUS BARANG     =====")
+				fmt.Println("==========================================")
+			}
+		} else {
+			fmt.Println(" ")
+			fmt.Println("-- Penghapusan Barang di Batalkan --")
+		}
+	} else {
+		fmt.Println("============================================")
+		fmt.Println("=====      BARANG TIDAK DITEMUKAN      =====")
+		fmt.Println("============================================")
+	}
+}
+
+func VSearchBarang() {
+	var serialNumber int
+
+	fmt.Println("==============================================")
+	fmt.Println("=====-----     CARI DATA BARANG     -----=====")
+	fmt.Println("==============================================")
+	fmt.Println(" ")
+
+	fmt.Println("----------------------------------------------")
+	fmt.Print("-- Input Serial Number : ")
+	fmt.Scan(&serialNumber)
+
+	barang, found := controller.CReadBarang(serialNumber)
+	VClearScreen()
+
+	if found {
+		fmt.Println("================================================")
+		fmt.Println("=====-----     DETAIL DATA BARANG     -----=====")
+		fmt.Println("================================================")
+		fmt.Println(" ")
+
+		fmt.Println("------------------------------------------------")
+		fmt.Println("-- Serial Number : ", barang.SerialNumber)
+		fmt.Println("-- Nama Barang   : ", barang.Name)
+		fmt.Println("-- Jumlah Barang : ", barang.Total)
+		fmt.Println("-- Harga Barang  : ", barang.Price)
+		fmt.Println("-- Supplier      : ", barang.Shiper)
+		fmt.Println("-- Create At     : ", barang.Create_at)
+		fmt.Println("------------------------------------------------")
+	} else {
+		fmt.Println("====================================================")
+		fmt.Println("=====-----     BARANG TIDAK DITEMUKAN     -----=====")
+		fmt.Println("====================================================")
 	}
 }

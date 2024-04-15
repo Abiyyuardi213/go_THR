@@ -1,6 +1,7 @@
 package controller
 
 import (
+	"go_THR/database"
 	"go_THR/model"
 	"go_THR/node"
 )
@@ -35,4 +36,26 @@ func CUpdateBarang(serialNumber int, name string, total int, price float32, ship
 func CDeleteBarang(serialNumber int) (*node.DataBarang, bool) {
 	deletedData, success := model.DeleteBarang(serialNumber)
 	return deletedData, success
+}
+
+func CSearchBarang(serialNumber int) (*node.DataBarang, bool) {
+	tmpLL := database.DatabaseBarang
+
+	for tmpLL.Next != nil {
+		tmpLL = *tmpLL.Next
+		if tmpLL.DBBarang.SerialNumber == serialNumber {
+			return &tmpLL.DBBarang, true
+		}
+	}
+	return nil, false
+}
+
+func CReadBarang(serialNumber int) (*node.DataBarang, bool) {
+	result := model.MSearch(serialNumber)
+
+	if result != nil {
+		return &result.DBBarang, true
+	}
+
+	return nil, false
 }
