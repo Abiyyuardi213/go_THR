@@ -14,11 +14,11 @@ func InputBarang(name string, total int, price float32, shiper string) {
 
 	barang := node.DataBarang{
 		SerialNumber: serialNumber,
-		Name: 		name,
-		Total: 		total,
-		Price: 		price,
-		Shiper: 	shiper,
-		Create_at: 	time.Now().Format("2006-01-02 15:04:05"),
+		Name:         name,
+		Total:        total,
+		Price:        price,
+		Shiper:       shiper,
+		Create_at:    time.Now().Format("2006-01-02 15:04:05"),
 	}
 
 	LLBaru := node.BarangLL{
@@ -32,7 +32,7 @@ func InputBarang(name string, total int, price float32, shiper string) {
 			tmpLL = tmpLL.Next
 		}
 		tmpLL.Next = &LLBaru
-	}	
+	}
 }
 
 func SystemLastId() int {
@@ -40,12 +40,16 @@ func SystemLastId() int {
 	tmpLL = &database.DatabaseBarang
 
 	if tmpLL.Next == nil {
-		return 0;
+		return 1
 	} else {
-		for tmpLL.Next != nil {
+		maxSerial := 0
+		for tmpLL != nil {
+			if tmpLL.DBBarang.SerialNumber > maxSerial {
+				maxSerial = tmpLL.DBBarang.SerialNumber
+			}
 			tmpLL = tmpLL.Next
 		}
-		return tmpLL.DBBarang.SerialNumber + 1
+		return maxSerial + 1
 	}
 }
 
@@ -124,4 +128,3 @@ func DeleteBarang(serialNumber int) (*node.DataBarang, bool) {
 	}
 	return nil, false
 }
-

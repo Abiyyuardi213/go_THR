@@ -62,13 +62,14 @@ func VInputBarang() {
 	fmt.Print("-- Pemasok : ")
 	fmt.Scan(&stake)
 
+	// Call SystemLastId once to get the serial number
+	serialNumber := model.SystemLastId()
+
 	cek := controller.CInputBarang(nama, total, harga, stake)
 	VClearScreen()
 
 	fmt.Println(" ")
 	if cek == true {
-		serialNumber := model.SystemLastId()
-
 		fmt.Println("-- Input barang berhasil --")
 		fmt.Println(" ")
 
