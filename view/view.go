@@ -7,7 +7,6 @@ import (
 	"os"
 	"os/exec"
 	"runtime"
-	"time"
 )
 
 func VClearScreen() {
@@ -23,26 +22,24 @@ func VClearScreen() {
 }
 
 func ShowMenu() {
-	fmt.Println("=============================================")
-	fmt.Println("=====        PT. BUKIT ASAM. TBK        =====")
-	fmt.Println("=====     MINING INFORMATION SYSTEM     =====")
-	fmt.Println("=============================================")
+	fmt.Println("==============================================")
+	fmt.Println("=====        WAREHOUSE MANAGEMENT        =====")    
+	fmt.Println("==============================================")
 	fmt.Println(" ")
 
-	fmt.Println("---------------------------------------------")
-	fmt.Println("-- 1. Input Data                           --")
-	fmt.Println("-- 2. Update Data                          --")
-	fmt.Println("-- 3. Delete Data                          --")
-	fmt.Println("-- 4. Search Data                          --")
-	fmt.Println("-- 5. Read All Data                        --")
-	fmt.Println("---------------------------------------------")
+	fmt.Println("----------------------------------------------")
+	fmt.Println("-- 1. Input Data                            --")
+	fmt.Println("-- 2. Update Data                           --")
+	fmt.Println("-- 3. Delete Data                           --")
+	fmt.Println("-- 4. Search Data                           --")
+	fmt.Println("-- 5. Read All Data                         --")
+	fmt.Println("----------------------------------------------")
 }
 
 func VInputBarang() {
 	var nama string
 	var total int
 	var harga float32
-	var stake string
 
 	fmt.Println("=====================================")
 	fmt.Println("=====     INPUT DATA BARANG     =====")
@@ -59,13 +56,9 @@ func VInputBarang() {
 	fmt.Print("-- Harga   : ")
 	fmt.Scan(&harga)
 
-	fmt.Print("-- Pemasok : ")
-	fmt.Scan(&stake)
-
-	// Call SystemLastId once to get the serial number
 	serialNumber := model.SystemLastId()
 
-	cek := controller.CInputBarang(nama, total, harga, stake)
+	cek := controller.CInputBarang(nama, total, harga)
 	VClearScreen()
 
 	fmt.Println(" ")
@@ -83,8 +76,6 @@ func VInputBarang() {
 		fmt.Printf("-- Nama Barang   : %s\n", nama)
 		fmt.Printf("-- Jumlah Barang : %d\n", total)
 		fmt.Printf("-- Harga Barang  : %.2f\n", harga)
-		fmt.Printf("-- Supplier      : %s\n", stake)
-		fmt.Printf("-- Create At     : %s\n", time.Now().Format("2006-01-02 15:04:05"))
 		fmt.Println("---------------------------------------------")
 	} else {
 		fmt.Println("-- Input barang gagal --")
@@ -105,10 +96,8 @@ func VReadAll() {
 		for _, barang := range barangs {
 			fmt.Println("-- Serial Number : ", barang.SerialNumber)
 			fmt.Println("-- Nama Barang   : ", barang.Name)
-			fmt.Println("-- Jumlah Barang : ", barang.Total)
+			fmt.Println("-- Jumlah Barang : ", barang.Stock)
 			fmt.Println("-- Harga Barang  : ", barang.Price)
-			fmt.Println("-- Supplier      : ", barang.Shiper)
-			fmt.Println("-- Create At     : ", barang.Create_at)
 			fmt.Println("-----------------------------------------")
 		}
 	} else {
@@ -128,7 +117,7 @@ func VUpdateBarang() {
 	fmt.Print("-- Input Serial Number : ")
 	fmt.Scan(&serialNumber)
 
-	barang := controller.CGetBarangBySerialNumber(serialNumber)
+	barang := controller.CFindBySerialNumber(serialNumber)
 	VClearScreen()
 
 	if barang == nil {
@@ -147,17 +136,14 @@ func VUpdateBarang() {
 	fmt.Println("------------------------------------------------")
 	fmt.Println("-- Serial Number : ", barang.SerialNumber)
 	fmt.Println("-- Nama Barang   : ", barang.Name)
-	fmt.Println("-- Jumlah Barang : ", barang.Total)
+	fmt.Println("-- Jumlah Barang : ", barang.Stock)
 	fmt.Println("-- Harga Barang  : ", barang.Price)
-	fmt.Println("-- Supplier      : ", barang.Shiper)
-	fmt.Println("-- Create At     : ", barang.Create_at)
 	fmt.Println("------------------------------------------------")
 	fmt.Println(" ")
 
 	var name string
 	var total int
 	var price float32
-	var shiper string
 
 	fmt.Println("================================================")
 	fmt.Println("=====-----     UPDATE DATA BARANG     -----=====")
@@ -174,10 +160,7 @@ func VUpdateBarang() {
 	fmt.Print("-- Harga Baru    : ")
 	fmt.Scan(&price)
 
-	fmt.Print("-- Supplier      : ")
-	fmt.Scan(&shiper)
-
-	updatedBarang, success := controller.CUpdateBarang(serialNumber, name, total, price, shiper)
+	updatedBarang, success := controller.CUpdateBarang(serialNumber, name, total, price)
 	VClearScreen()
 
 	fmt.Println(" ")
@@ -193,10 +176,8 @@ func VUpdateBarang() {
 		fmt.Println("-------------------------------------------------")
 		fmt.Println("-- Serial Number : ", updatedBarang.SerialNumber)
 		fmt.Println("-- Nama Barang   : ", updatedBarang.Name)
-		fmt.Println("-- Jumlah Barang : ", updatedBarang.Total)
+		fmt.Println("-- Jumlah Barang : ", updatedBarang.Stock)
 		fmt.Println("-- Harga Barang  : ", updatedBarang.Price)
-		fmt.Println("-- Supplier      : ", updatedBarang.Shiper)
-		fmt.Println("-- Create At     : ", updatedBarang.Create_at)
 		fmt.Println("-------------------------------------------------")
 	} else {
 		fmt.Println("----- Gagal Memperbarui Barang -----")
@@ -227,10 +208,8 @@ func VDeleteBarang() {
 		fmt.Println("-------------------------------------------")
 		fmt.Println("-- Serial Number : ", barangToDelete.SerialNumber)
 		fmt.Println("-- Nama Barang   : ", barangToDelete.Name)
-		fmt.Println("-- Jumlah Barang : ", barangToDelete.Total)
+		fmt.Println("-- Jumlah Barang : ", barangToDelete.Stock)
 		fmt.Println("-- Harga Barang  : ", barangToDelete.Price)
-		fmt.Println("-- Supplier      : ", barangToDelete.Shiper)
-		fmt.Println("-- Create At     : ", barangToDelete.Create_at)
 		fmt.Println("-------------------------------------------")
 		fmt.Println(" ")
 		fmt.Println("-- Apakah anda yakin akan menghapus barang diatas? (y/n)")
@@ -249,10 +228,8 @@ func VDeleteBarang() {
 				fmt.Println("============================================")
 				fmt.Println("-- Serial Number : ", deletedData.SerialNumber)
 				fmt.Println("-- Nama Barang   : ", deletedData.Name)
-				fmt.Println("-- Jumlah Barang : ", deletedData.Total)
+				fmt.Println("-- Jumlah Barang : ", deletedData.Stock)
 				fmt.Println("-- Harga Barang  : ", deletedData.Price)
-				fmt.Println("-- Supplier      : ", deletedData.Shiper)
-				fmt.Println("-- Create At     : ", deletedData.Create_at)
 				fmt.Println("--------------------------------------------")
 			} else {
 				fmt.Println("==========================================")
@@ -282,7 +259,7 @@ func VSearchBarang() {
 	fmt.Print("-- Input Serial Number : ")
 	fmt.Scan(&serialNumber)
 
-	barang, found := controller.CReadBarang(serialNumber)
+	barang, found := controller.CSearchBarang(serialNumber)
 	VClearScreen()
 
 	if found {
@@ -294,10 +271,8 @@ func VSearchBarang() {
 		fmt.Println("------------------------------------------------")
 		fmt.Println("-- Serial Number : ", barang.SerialNumber)
 		fmt.Println("-- Nama Barang   : ", barang.Name)
-		fmt.Println("-- Jumlah Barang : ", barang.Total)
+		fmt.Println("-- Jumlah Barang : ", barang.Stock)
 		fmt.Println("-- Harga Barang  : ", barang.Price)
-		fmt.Println("-- Supplier      : ", barang.Shiper)
-		fmt.Println("-- Create At     : ", barang.Create_at)
 		fmt.Println("------------------------------------------------")
 	} else {
 		fmt.Println("====================================================")

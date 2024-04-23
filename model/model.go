@@ -3,10 +3,9 @@ package model
 import (
 	"go_THR/database"
 	"go_THR/node"
-	"time"
 )
 
-func InputBarang(name string, total int, price float32, shiper string) {
+func InputBarang(name string, total int, price float32) {
 	var tmpLL *node.BarangLL
 	tmpLL = &database.DatabaseBarang
 
@@ -15,10 +14,8 @@ func InputBarang(name string, total int, price float32, shiper string) {
 	barang := node.DataBarang{
 		SerialNumber: serialNumber,
 		Name:         name,
-		Total:        total,
+		Stock:        total,
 		Price:        price,
-		Shiper:       shiper,
-		Create_at:    time.Now().Format("2006-01-02 15:04:05"),
 	}
 
 	LLBaru := node.BarangLL{
@@ -65,66 +62,51 @@ func MReadAll() []node.DataBarang {
 	return tabelBarang
 }
 
-func MSearch(serialNumber int) *node.BarangLL {
+func FindBySerialNumber(serialNumber int) *node.BarangLL {
 	var tmpLL *node.BarangLL
 	tmpLL = &database.DatabaseBarang
 
-	if tmpLL.Next != nil {
-		for tmpLL.Next != nil {
-			if tmpLL.Next.DBBarang.SerialNumber == serialNumber {
-				return tmpLL.Next
-			}
-			tmpLL = tmpLL.Next
-		}
-	} else {
-		return nil
-	}
-	return nil
-}
-
-func GetBarangBySerialNumber(serialNumber int) *node.DataBarang {
-	var tmpLL *node.BarangLL
-	tmpLL = &database.DatabaseBarang
-
-	for tmpLL != nil {
-		if tmpLL.DBBarang.SerialNumber == serialNumber {
-			return &tmpLL.DBBarang
-		}
+	for tmpLL.Next != nil {
 		tmpLL = tmpLL.Next
+		if tmpLL.DBBarang.SerialNumber == serialNumber {
+			return tmpLL
+		}
 	}
 	return nil
 }
 
-func UpdateBarang(serialNumber int, name string, total int, price float32, shiper string) (*node.DataBarang, bool) {
-	barang := GetBarangBySerialNumber(serialNumber)
+func MUpdateBarang(serialNumber int, name string, stock int, price float32) (*node.DataBarang, bool) {
+	tmpLL := FindBySerialNumber(serialNumber)
 
-	if barang != nil {
+	if tmpLL != nil {
+		barang := &tmpLL.DBBarang
 		barang.Name = name
-		barang.Total = total
+		barang.Stock = stock
 		barang.Price = price
-		barang.Shiper = shiper
-		barang.Create_at = time.Now().Format("2006-01-02 15:04:05")
 		return barang, true
 	}
 	return nil, false
 }
 
-func DeleteBarang(serialNumber int) (*node.DataBarang, bool) {
-	var prevLL *node.BarangLL
-	tmpLL := &database.DatabaseBarang
+func MDeleteBarang(serialNumber int) (*node.DataBarang, bool) {
+	tmpLL := FindBySerialNumber(serialNumber)
+	if tmpLL != nil {
+		deleteData := tmpLL.DBBarang
+		prevLL := &database.DatabaseBarang
 
-	for tmpLL != nil {
-		if tmpLL.DBBarang.SerialNumber == serialNumber {
-			deletedData := tmpLL.DBBarang
-			if prevLL == nil {
-				database.DatabaseBarang = *tmpLL.Next
-			} else {
-				prevLL.Next = tmpLL.Next
-			}
-			return &deletedData, true
+		for prevLL.Next != tmpLL {
+			prevLL = prevLL.Next
 		}
-		prevLL = tmpLL
-		tmpLL = tmpLL.Next
+		prevLL.Next = tmpLL.Next
+		return &deleteData, true
+	}
+	return nil, false
+}
+
+func MSearchBarang(serialNumber int) (*node.DataBarang, bool) {
+	tmpLL := FindBySerialNumber(serialNumber)
+	if tmpLL != nil {
+		return &tmpLL.DBBarang, true
 	}
 	return nil, false
 }
