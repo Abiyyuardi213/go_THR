@@ -1,13 +1,14 @@
 package controller
 
 import (
+	"fmt"
 	"go_THR/model"
 	"go_THR/node"
 )
 
-func CInputBarang(name string, total int, price float32) bool {
-	if name != "" && total != 0 && price != 0 {
-		model.InputBarang(name, total, price)
+func CInputBarang(name string, stock int, price float32) bool {
+	if name != "" && stock != 0 && price != 0 {
+		model.InputBarang(name, stock, price)
 		return true
 	}
 	return false
@@ -31,6 +32,7 @@ func CFindBySerialNumber(serialNumber int) *node.DataBarang {
 }
 
 func CUpdateBarang(serialNumber int, name string, total int, price float32) (*node.DataBarang, bool) {
+	fmt.Println(serialNumber)
 	barang, success := model.MUpdateBarang(serialNumber, name, total, price)
 	if success {
 		return barang, true

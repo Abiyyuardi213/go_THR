@@ -53,7 +53,6 @@ func VInputBarang() {
 	fmt.Print("-- Jumlah  : ")
 	fmt.Scan(&total)
 
-	fmt.Print("-- Harga   : ")
 	fmt.Scan(&harga)
 
 	serialNumber := model.SystemLastId()

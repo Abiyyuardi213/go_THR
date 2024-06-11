@@ -2,11 +2,25 @@ package main
 
 import (
 	"fmt"
+	"go_THR/handler"
 	"go_THR/view"
+	"net/http"
 	"os"
 	"os/exec"
 	"runtime"
 )
+
+func WebProgram() {
+	http.HandleFunc("/", handler.ViewHandler)
+	http.HandleFunc("/update/", handler.UpdateBarangHandlerWrapper)
+	http.HandleFunc("/updatePost", handler.UpdateBarangPost)
+
+	http.HandleFunc("/insert", handler.InsertBarangHandler)
+	http.HandleFunc("/delete", handler.DeleteBarangHandler)
+
+	// Menjalankan web server
+	http.ListenAndServe(":8080", nil)
+}
 
 func ClearScreen() {
 	if runtime.GOOS == "windows" {
@@ -32,7 +46,7 @@ func MainProgram() {
 		switch pilih {
 		case 1:
 			view.VInputBarang()
-			
+
 		case 2:
 			view.VUpdateBarang()
 
@@ -52,5 +66,7 @@ func MainProgram() {
 }
 
 func main() {
-	MainProgram()
+	// MainProgram()
+	// model.InputBarang("batu", 100, 12000)
+	WebProgram()
 }

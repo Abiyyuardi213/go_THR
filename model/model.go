@@ -5,7 +5,7 @@ import (
 	"go_THR/node"
 )
 
-func InputBarang(name string, total int, price float32) {
+func InputBarang(name string, stock int, price float32) {
 	var tmpLL *node.BarangLL
 	tmpLL = &database.DatabaseBarang
 
@@ -14,7 +14,7 @@ func InputBarang(name string, total int, price float32) {
 	barang := node.DataBarang{
 		SerialNumber: serialNumber,
 		Name:         name,
-		Stock:        total,
+		Stock:        stock,
 		Price:        price,
 	}
 
